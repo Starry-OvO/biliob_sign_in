@@ -6,7 +6,7 @@
 
 Copy your headers to [./headers.txt] from your browser
 Run this script every 8 hours
-Example: 0 */8 * * * . /etc/profile; python biliob_sign.py
+Example: 17 */8 * * * . /etc/profile; python biliob_sign.py
 
 Enjoy :)
 """
@@ -62,7 +62,7 @@ def create_logger():
     return log
 
 
-def retry(func,_retry_times,sleep_time):
+def retry(_retry_times,sleep_time):
     """
     Decorator to retry a function
     @retry(_retry_times,sleep_time)
@@ -71,21 +71,24 @@ def retry(func,_retry_times,sleep_time):
         _retry_times:int How much times to retry
         sleep_time:int How much time to sleep
     """
-    @wraps(func)
-    def wrap_func(*args,**kwargs):
+    def decorator(func):
+        @wraps(func)
+        def wrapped_func(*args,**kwargs):
 
-        retry_times = _retry_times
-        while retry_times:
-            flag,res = func(*args,**kwargs)
-            if flag:
-                break
-            else:
-                retry_times-=1
-                time.sleep(sleep_time)
+            retry_times = _retry_times
+            while retry_times:
+                flag,res = func(*args,**kwargs)
+                if flag:
+                    break
+                else:
+                    retry_times-=1
+                    time.sleep(sleep_time)
 
-        return flag,res
+            return flag,res
 
-    return wrap_func
+        return wrapped_func
+
+    return decorator
 
 
 @retry(20,10)
