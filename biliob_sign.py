@@ -6,6 +6,8 @@
 
 Copy your headers to [./headers.txt] from your browser
 Run this script every 8 hours
+Example: 17 */8 * * * . /etc/profile; python biliob_sign.py
+
 Enjoy :)
 """
 
